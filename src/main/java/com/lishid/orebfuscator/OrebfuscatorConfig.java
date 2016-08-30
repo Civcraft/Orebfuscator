@@ -459,7 +459,7 @@ public class OrebfuscatorConfig {
         setBlockValues(ObfuscateBlocks, getIntList("Lists.ObfuscateBlocks", Arrays.asList(new Integer[]{14, 15, 16, 21, 54, 56, 73, 74, 129, 130})), false);
         setBlockValues(NetherObfuscateBlocks, getIntList("Lists.NetherObfuscateBlocks", Arrays.asList(new Integer[]{87, 153})), false);
         setBlockValues(DarknessBlocks, getIntList("Lists.DarknessBlocks", Arrays.asList(new Integer[]{52, 54})));
-        setBlockValues(ProximityHiderBlocks, getIntList("Lists.ProximityHiderBlocks", Arrays.asList(new Integer[]{23, 52, 54, 56, 58, 61, 62, 116, 129, 130, 145, 146})));
+        setBlockValues(ProximityHiderBlocks, getIntList("Lists.ProximityHiderBlocks", Arrays.asList(new Integer[]{23, 25, 52, 54, 56, 58, 61, 62, 84, 116, 129, 130, 145, 146})));
 
         // Disable worlds
         DisabledWorlds = getStringList("Lists.DisabledWorlds", DisabledWorlds);
