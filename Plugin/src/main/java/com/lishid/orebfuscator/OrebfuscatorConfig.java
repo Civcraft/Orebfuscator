@@ -57,6 +57,8 @@ public class OrebfuscatorConfig {
     public static int InitialRadius = 1;
     public static int UpdateRadius = 2;
     public static boolean UseWorldsAsBlacklist = true;
+    public static boolean NoObfuscationForMetadata = true;
+    public static String NoObfuscationForMetadataTagName = "NPC";
 
     // Darkness
     public static boolean DarknessHideBlocks = false;
@@ -66,6 +68,7 @@ public class OrebfuscatorConfig {
     public static int MaxLoadedCacheFiles = 64;
     public static String CacheLocation = "orebfuscator_cache";
     public static File CacheFolder = new File(Bukkit.getServer().getWorldContainer(), CacheLocation);
+    public static int DeleteCacheFilesAfterDays = 0;
 
     // ProximityHider
     public static int ProximityHiderRate = 500;
@@ -105,6 +108,10 @@ public class OrebfuscatorConfig {
     
     // ChunkReloader
     public static int ChunkReloaderRate = 500;
+    public static boolean UseChunkReloader = false;
+
+    // CacheCleaner
+    public static long CacheCleanRate = 60 * 60 * 20;//once per hour
 
     public static File getCacheFolder() {
         // Try to make the folder
@@ -447,6 +454,10 @@ public class OrebfuscatorConfig {
         AntiTexturePackAndFreecam = getBoolean("Booleans.AntiTexturePackAndFreecam", AntiTexturePackAndFreecam);
         UseWorldsAsBlacklist = getBoolean("Booleans.UseWorldsAsBlacklist", UseWorldsAsBlacklist);
         Enabled = getBoolean("Booleans.Enabled", Enabled);
+        NoObfuscationForMetadata = getBoolean("Booleans.NoObfuscationForMetadata", NoObfuscationForMetadata);
+        NoObfuscationForMetadataTagName = getString("Strings.NoObfuscationForMetadataTagName", NoObfuscationForMetadataTagName);
+        DeleteCacheFilesAfterDays = getInt("Integers.DeleteCacheFilesAfterDays", DeleteCacheFilesAfterDays);
+        //UseChunkReloader = getBoolean("Booleans.UseChunkReloader", UseChunkReloader);
 
         generateTransparentBlocks();
 
@@ -641,7 +652,7 @@ public class OrebfuscatorConfig {
     }
 
     public static boolean obfuscateForPlayer(Player player) {
-        return !(playerBypassOp(player) || playerBypassPerms(player));
+        return !(playerBypassOp(player) || playerBypassPerms(player) || playerBypassMetadata(player));
     }
 
     public static boolean playerBypassOp(Player player) {
@@ -661,6 +672,19 @@ public class OrebfuscatorConfig {
             ret = OrebfuscatorConfig.NoObfuscationForPermission && player.hasPermission("Orebfuscator.deobfuscate");
         } catch (Exception e) {
             Orebfuscator.log("Error while obtaining permissions for player" + player.getName() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static boolean playerBypassMetadata(Player player) {
+        boolean ret = false;
+        try {
+            ret = OrebfuscatorConfig.NoObfuscationForMetadata
+            		&& player.hasMetadata(OrebfuscatorConfig.NoObfuscationForMetadataTagName)
+            		&& player.getMetadata(OrebfuscatorConfig.NoObfuscationForMetadataTagName).get(0).asBoolean();
+        } catch (Exception e) {
+            Orebfuscator.log("Error while obtaining metadata for player" + player.getName() + ": " + e.getMessage());
             e.printStackTrace();
         }
         return ret;
